@@ -91,7 +91,8 @@ io.on('connection', (socket) => {
         senderName: sender.username,
         receiverId,
         content,
-        timestamp: new Date()
+        timestamp: new Date(),
+        isRead: false
       };
 
       // Store message in history

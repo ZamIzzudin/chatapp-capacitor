@@ -11,6 +11,7 @@ export interface Message {
   receiverId: string;
   content: string;
   timestamp: Date;
+  isRead: boolean;
 }
 
 export interface ChatRoom {
@@ -18,4 +19,5 @@ export interface ChatRoom {
   participants: User[];
   messages: Message[];
   lastMessage?: Message;
+  unreadCount: number;
 }

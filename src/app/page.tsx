@@ -19,10 +19,13 @@ export default function Home() {
     isConnected,
     onlineUsers,
     messages,
+    getUnreadCount,
     joinChat,
     sendMessage,
     startChat,
-    setMessages
+    setMessages,
+    markMessagesAsRead,
+    setCurrentChatUserId
   } = useSocket('http://localhost:3001');
 
   const handleLogin = (username: string) => {
@@ -59,6 +62,7 @@ export default function Home() {
   const handleBackToUserList = () => {
     setChatPartner(null);
     setMessages([]);
+    setCurrentChatUserId(null);
     setAppState('userlist');
   };
 
@@ -72,6 +76,7 @@ export default function Home() {
         users={onlineUsers}
         currentUserId={currentUser.id}
         onStartChat={handleStartChat}
+        getUnreadCount={getUnreadCount}
       />
     );
   }
@@ -84,6 +89,7 @@ export default function Home() {
         chatPartner={chatPartner}
         onSendMessage={handleSendMessage}
         onBack={handleBackToUserList}
+        markMessagesAsRead={markMessagesAsRead}
       />
     );
   }

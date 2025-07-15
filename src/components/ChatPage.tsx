@@ -8,6 +8,7 @@ interface ChatPageProps {
   chatPartner: UserType;
   onSendMessage: (content: string) => void;
   onBack: () => void;
+  markMessagesAsRead: (userId: string) => void;
 }
 
 export default function ChatPage({ 
@@ -15,10 +16,16 @@ export default function ChatPage({
   currentUserId, 
   chatPartner, 
   onSendMessage, 
-  onBack 
+  onBack,
+  markMessagesAsRead
 }: ChatPageProps) {
   const [newMessage, setNewMessage] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Mark messages as read when component mounts or messages change
+  useEffect(() => {
+    markMessagesAsRead(chatPartner.id);
+  }, [chatPartner.id, messages, markMessagesAsRead]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
