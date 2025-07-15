@@ -13,6 +13,7 @@ export default function Home() {
   const [appState, setAppState] = useState<AppState>('login');
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [chatPartner, setChatPartner] = useState<User | null>(null);
+  const [pendingUsername, setPendingUsername] = useState<string | null>(null);
   
   const {
     isConnected,
@@ -25,18 +26,20 @@ export default function Home() {
   } = useSocket('http://localhost:3001');
 
   const handleLogin = (username: string) => {
+    setPendingUsername(username);
     joinChat(username);
   };
 
   useEffect(() => {
-    if (isConnected && onlineUsers.length > 0) {
-      const user = onlineUsers.find(u => u.username === currentUser?.username);
-      if (user && !currentUser) {
+    if (isConnected && onlineUsers.length > 0 && pendingUsername && !currentUser) {
+      const user = onlineUsers.find(u => u.username === pendingUsername);
+      if (user) {
         setCurrentUser(user);
+        setPendingUsername(null);
         setAppState('userlist');
       }
     }
-  }, [isConnected, onlineUsers, currentUser]);
+  }, [isConnected, onlineUsers, pendingUsername, currentUser]);
 
   const handleStartChat = (userId: string) => {
     const partner = onlineUsers.find(user => user.id === userId);
