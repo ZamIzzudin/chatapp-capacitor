@@ -141,14 +141,6 @@ export const useSocket = (serverUrl: string) => {
     }
   };
 
-  const markMessagesAsRead = (userId: string) => {
-    setUnreadMessages((prev) => {
-      const newMap = new Map(prev);
-      newMap.delete(userId);
-      return newMap;
-    });
-  };
-
   const markMessagesAsReadCallback = useCallback((userId: string) => {
     setUnreadMessages((prev) => {
       const newMap = new Map(prev);
