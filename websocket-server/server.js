@@ -60,6 +60,9 @@ io.on('connection', (socket) => {
 
     connectedUsers.set(socket.id, user);
     
+    // Send user ID back to the client
+    socket.emit('user_joined', { userId: socket.id, username });
+    
     // Broadcast updated user list to all clients
     io.emit('users_updated', getOnlineUsers());
     

@@ -22,6 +22,7 @@ export default function Home() {
     isConnected,
     onlineUsers,
     messages,
+    currentUserId,
     getUnreadCount,
     joinChat,
     sendMessage,
@@ -43,14 +44,14 @@ export default function Home() {
       pendingUsername &&
       !currentUser
     ) {
-      const user = onlineUsers.find((u) => u.username === pendingUsername);
+      const user = onlineUsers.find((u) => u.username === pendingUsername && u.id === currentUserId);
       if (user) {
         setCurrentUser(user);
         setPendingUsername(null);
         setAppState("userlist");
       }
     }
-  }, [isConnected, onlineUsers, pendingUsername, currentUser]);
+  }, [isConnected, onlineUsers, pendingUsername, currentUser, currentUserId]);
 
   const handleStartChat = (userId: string) => {
     const partner = onlineUsers.find((user) => user.id === userId);

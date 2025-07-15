@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { User, MessageCircle, Search, Users, Circle } from 'lucide-react';
 import { User as UserType } from '@/types/chat';
+import NotificationTest from './NotificationTest';
 
 interface UserListProps {
   users: UserType[];
@@ -124,6 +125,8 @@ export default function UserList({ users, currentUserId, onStartChat, getUnreadC
           </div>
         </div>
       </div>
+      
+      <NotificationTest />
     </div>
   );
 }

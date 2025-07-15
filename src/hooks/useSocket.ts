@@ -18,6 +18,7 @@ export const useSocket = (serverUrl: string) => {
   const [currentChatUserId, setCurrentChatUserId] = useState<string | null>(
     null
   );
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const socketRef = useRef<Socket | null>(null);
   const currentChatUserIdRef = useRef<string | null>(null);
 
@@ -37,6 +38,7 @@ export const useSocket = (serverUrl: string) => {
         // Listen for app state changes
         App.addListener("appStateChange", ({ isActive }) => {
           setIsAppInForeground(isActive);
+          console.log("App state changed:", isActive ? "foreground" : "background");
         });
       } catch (error) {
         console.log("Notifications not available:", error);
@@ -57,24 +59,38 @@ export const useSocket = (serverUrl: string) => {
 
     newSocket.on("connect", () => {
       setIsConnected(true);
+      console.log("Socket connected:", newSocket.id);
     });
 
     newSocket.on("disconnect", () => {
       setIsConnected(false);
+      console.log("Socket disconnected");
     });
 
     newSocket.on("users_updated", (users: User[]) => {
       setOnlineUsers(users);
     });
 
+    newSocket.on("user_joined", (data: { userId: string; username: string }) => {
+      setCurrentUserId(data.userId);
+      console.log("Current user ID set:", data.userId);
+    });
     newSocket.on("message_received", (message: Message) => {
+      console.log("Message received:", message);
+      console.log("Current user ID:", currentUserId);
+      console.log("Message sender ID:", message.senderId);
+      console.log("Current chat user ID:", currentChatUserIdRef.current);
+      console.log("App in foreground:", isAppInForeground);
+      
       setMessages((prev) => [...prev, message]);
 
-      // Handle unread messages and notifications
-      const isCurrentChat = currentChatUserIdRef.current === message.senderId;
-      const shouldShowNotification = !isAppInForeground || !isCurrentChat;
+      // Only show notification if message is not from current user
+      if (message.senderId !== newSocket.id) {
+        const isCurrentChat = currentChatUserIdRef.current === message.senderId;
+        const shouldShowNotification = !isAppInForeground || !isCurrentChat;
 
-      if (shouldShowNotification) {
+        console.log("Should show notification:", shouldShowNotification);
+        
         // Update unread count
         setUnreadMessages((prev) => {
           const newMap = new Map(prev);
@@ -84,7 +100,9 @@ export const useSocket = (serverUrl: string) => {
         });
 
         // Show local notification
-        showNotification(message);
+        if (shouldShowNotification) {
+          showNotification(message);
+        }
       }
     });
 
@@ -95,10 +113,11 @@ export const useSocket = (serverUrl: string) => {
     return () => {
       newSocket.close();
     };
-  }, [serverUrl, isAppInForeground]);
+  }, [serverUrl, isAppInForeground, currentUserId]);
 
   const showNotification = async (message: Message) => {
     try {
+      console.log("Showing notification for message:", message.content);
       await LocalNotifications.schedule({
         notifications: [
           {
@@ -116,6 +135,7 @@ export const useSocket = (serverUrl: string) => {
           },
         ],
       });
+      console.log("Notification scheduled successfully");
     } catch (error) {
       console.log("Failed to show notification:", error);
     }
@@ -165,6 +185,7 @@ export const useSocket = (serverUrl: string) => {
     onlineUsers,
     messages,
     unreadMessages,
+    currentUserId,
     joinChat,
     sendMessage,
     startChat,
