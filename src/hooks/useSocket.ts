@@ -19,6 +19,12 @@ export const useSocket = (serverUrl: string) => {
     null
   );
   const socketRef = useRef<Socket | null>(null);
+  const currentChatUserIdRef = useRef<string | null>(null);
+
+  // Keep ref in sync with state
+  useEffect(() => {
+    currentChatUserIdRef.current = currentChatUserId;
+  }, [currentChatUserId]);
 
   // Initialize notifications and app state
   useEffect(() => {
@@ -65,7 +71,7 @@ export const useSocket = (serverUrl: string) => {
       setMessages((prev) => [...prev, message]);
 
       // Handle unread messages and notifications
-      const isCurrentChat = currentChatUserId === message.senderId;
+      const isCurrentChat = currentChatUserIdRef.current === message.senderId;
       const shouldShowNotification = !isAppInForeground || !isCurrentChat;
 
       if (shouldShowNotification) {
@@ -89,7 +95,7 @@ export const useSocket = (serverUrl: string) => {
     return () => {
       newSocket.close();
     };
-  }, [serverUrl]);
+  }, [serverUrl, isAppInForeground]);
 
   const showNotification = async (message: Message) => {
     try {

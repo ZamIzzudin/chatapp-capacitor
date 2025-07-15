@@ -21,11 +21,22 @@ export default function ChatPage({
 }: ChatPageProps) {
   const [newMessage, setNewMessage] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const hasMarkedAsRead = useRef(false);
 
-  // Mark messages as read when component mounts or messages change
+  // Mark messages as read when component mounts
   useEffect(() => {
-    markMessagesAsRead(chatPartner.id);
+    if (!hasMarkedAsRead.current) {
+      markMessagesAsRead(chatPartner.id);
+      hasMarkedAsRead.current = true;
+    }
   }, [chatPartner.id, markMessagesAsRead]);
+
+  // Mark messages as read when new messages arrive
+  useEffect(() => {
+    if (messages.length > 0) {
+      markMessagesAsRead(chatPartner.id);
+    }
+  }, [messages.length, chatPartner.id, markMessagesAsRead]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });

@@ -9,9 +9,18 @@ const server = http.createServer(app);
 // Configure CORS for Socket.IO
 const io = socketIo(server, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: [
+      "http://localhost:3000",
+      "http://192.168.141.227:3000",
+      "https://localhost",
+      "capacitor://localhost",
+      "ionic://localhost",
+      "http://localhost",
+      "https://192.168.141.227:3000"
+    ],
     methods: ["GET", "POST"],
-    credentials: true
+    credentials: true,
+    allowEIO3: true
   }
 });
 

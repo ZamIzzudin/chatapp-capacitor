@@ -8,6 +8,16 @@ const config: CapacitorConfig = {
   webDir: "out",
   server: {
     androidScheme: "https",
+    cleartext: true,
+    allowNavigation: [
+      "192.168.141.227:3001",
+      "localhost:3001"
+    ]
+  },
+  plugins: {
+    CapacitorHttp: {
+      enabled: true,
+    },
   },
 };
 
