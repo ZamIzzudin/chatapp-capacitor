@@ -143,6 +143,14 @@ export const useSocket = (serverUrl: string) => {
     });
   };
 
+  const markMessagesAsReadCallback = useCallback((userId: string) => {
+    setUnreadMessages(prev => {
+      const newMap = new Map(prev);
+      newMap.delete(userId);
+      return newMap;
+    });
+  }, []);
+
   const getUnreadCount = (userId: string): number => {
     return unreadMessages.get(userId) || 0;
   };
@@ -157,7 +165,7 @@ export const useSocket = (serverUrl: string) => {
     sendMessage,
     startChat,
     setMessages,
-    markMessagesAsRead,
+    markMessagesAsRead: markMessagesAsReadCallback,
     getUnreadCount,
     setCurrentChatUserId
   };

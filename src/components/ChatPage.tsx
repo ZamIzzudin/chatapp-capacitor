@@ -25,7 +25,7 @@ export default function ChatPage({
   // Mark messages as read when component mounts or messages change
   useEffect(() => {
     markMessagesAsRead(chatPartner.id);
-  }, [chatPartner.id, messages, markMessagesAsRead]);
+  }, [chatPartner.id, markMessagesAsRead]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
