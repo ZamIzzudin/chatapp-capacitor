@@ -10,25 +10,13 @@ import { useSocket } from "@/hooks/useSocket";
 import { User } from "@/types/chat";
 
 type AppState = "login" | "userlist" | "chat";
+const port = "http://localhost:3001";
 
 export default function Home() {
   const [appState, setAppState] = useState<AppState>("login");
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [chatPartner, setChatPartner] = useState<User | null>(null);
   const [pendingUsername, setPendingUsername] = useState<string | null>(null);
-  
-  // Determine server URL based on environment
-  const getServerUrl = () => {
-    if (typeof window !== 'undefined') {
-      // For development, use localhost
-      if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-        return "http://192.168.141.227:3001";
-      }
-      // For production/real device, use the same network IP
-      return "http://192.168.141.227:3001";
-    }
-    return "http://192.168.141.227:3001";
-  };
 
   const {
     isConnected,
@@ -41,7 +29,7 @@ export default function Home() {
     setMessages,
     markMessagesAsRead,
     setCurrentChatUserId,
-  } = useSocket(getServerUrl());
+  } = useSocket(port);
 
   const handleLogin = (username: string) => {
     setPendingUsername(username);
