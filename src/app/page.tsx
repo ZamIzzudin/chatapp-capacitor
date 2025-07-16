@@ -10,7 +10,8 @@ import { useSocket } from "@/hooks/useSocket";
 import { User } from "@/types/chat";
 
 type AppState = "login" | "userlist" | "chat";
-const port = "http://localhost:3001";
+// const port = "http://localhost:3001";
+const port = "http://70.153.25.90:3001";
 
 export default function Home() {
   const [appState, setAppState] = useState<AppState>("login");
@@ -44,7 +45,9 @@ export default function Home() {
       pendingUsername &&
       !currentUser
     ) {
-      const user = onlineUsers.find((u) => u.username === pendingUsername && u.id === currentUserId);
+      const user = onlineUsers.find(
+        (u) => u.username === pendingUsername && u.id === currentUserId
+      );
       if (user) {
         setCurrentUser(user);
         setPendingUsername(null);
